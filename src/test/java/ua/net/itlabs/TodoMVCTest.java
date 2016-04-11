@@ -21,16 +21,16 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class TodoMVCTest {
 
-        @After
-        public void tearDown() throws IOException {
-            screenshot();
-        }
+    @After
+    public void tearDown() throws IOException {
+        screenshot();
+    }
 
-        @Attachment(type = "image/png")
-        public byte[] screenshot() throws IOException {
-            File screenshot = Screenshots.takeScreenShotAsFile();
-            return Files.toByteArray(screenshot);
-        }
+    @Attachment(type = "image/png")
+    public byte[] screenshot() throws IOException {
+        File screenshot = Screenshots.takeScreenShotAsFile();
+        return Files.toByteArray(screenshot);
+    }
 
     @Before
     public void openPage() {
@@ -84,8 +84,9 @@ public class TodoMVCTest {
 
     @Test
     public void testCancelEditAtAll() {
-
+        //given - task at All filter
         add("1");
+
         startEdit("1", "1 cancel edit").pressEscape();
         assertTasks("1");
         assertItemsLeft(1);
@@ -109,7 +110,7 @@ public class TodoMVCTest {
     @Test
     public void testEditClickOutsideAtActive() {
 
-        //given Active filter
+        //given - task at Active filter
         add("1");
         filterActive();
 
@@ -122,7 +123,9 @@ public class TodoMVCTest {
     @Test
     public void testEditClickTabAtAll() {
 
+        //given - task at All filter
         add("1");
+
         startEdit("1", "1 edited").pressTab();
         assertTasks("1 edited");
         assertItemsLeft(1);
@@ -130,8 +133,9 @@ public class TodoMVCTest {
 
     @Test
     public void testDeleteByEmptyAtAll() {
-
+        //given - task at All filter
         add("1");
+
         startEdit("1", "").pressEnter();
         assertNoTasks();
     }
