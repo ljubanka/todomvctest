@@ -1,17 +1,10 @@
 package ua.net.itlabs;
 
 import com.codeborne.selenide.*;
-import com.google.common.io.Files;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import ru.yandex.qatools.allure.annotations.Attachment;
 import ru.yandex.qatools.allure.annotations.Step;
 
-
-import java.io.File;
-import java.io.IOException;
 
 import static com.codeborne.selenide.CollectionCondition.empty;
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
@@ -19,29 +12,8 @@ import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
-public class TodoMVCTest {
+public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
-    @After
-    public void tearDown() throws IOException {
-        screenshot();
-    }
-
-    @Attachment(type = "image/png")
-    public byte[] screenshot() throws IOException {
-        File screenshot = Screenshots.takeScreenShotAsFile();
-        return Files.toByteArray(screenshot);
-    }
-
-    @Before
-    public void openPage() {
-        open("https://todomvc4tasj.herokuapp.com/");
-    }
-
-    @After
-    public void clearData() {
-        executeJavaScript("localStorage.clear()");
-
-    }
 
 
     @Test
@@ -197,17 +169,14 @@ public class TodoMVCTest {
         $(By.linkText("Completed")).click();
     }
 
-    @Step
     private void assertTasks(String... taskTexts) {
         tasks.filter(visible).shouldHave(exactTexts(taskTexts));
     }
 
-    @Step
     private void assertNoTasks() {
         tasks.filter(visible).shouldBe(empty);
     }
 
-    @Step
     private void assertItemsLeft(int count) {
         $("#todo-count>strong").shouldHave(exactText(Integer.toString(count)));
     }
