@@ -116,6 +116,20 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     ElementsCollection tasks = $$("#todo-list>li");
 
+    private void givenAllActive(String taskType, String... tasks) {
+        if (taskType.equals("active")) {
+            for (String task: tasks) {
+                executeJavaScript(String.format("localStorage.setItem(\"todos-troopjs\", \"[{\"completed\":false, \"title\":%s}]\")"), task);
+            }
+        }
+        else {
+            for (String task: tasks) {
+                executeJavaScript(String.format("localStorage.setItem(\"todos-troopjs\", \"[{\"completed\":true, \"title\":%s}]\")"), task);
+            }
+        }
+
+    }
+
     @Step
     private void add(String... taskTexts) {
         for (String text: taskTexts) {
