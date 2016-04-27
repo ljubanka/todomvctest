@@ -1,4 +1,4 @@
-package ua.net.itlabs;
+package ua.net.itlabs.hw4.v1;
 
 import com.codeborne.selenide.Screenshots;
 import com.google.common.io.Files;

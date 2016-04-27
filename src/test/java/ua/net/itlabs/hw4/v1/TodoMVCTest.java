@@ -1,9 +1,10 @@
-package ua.net.itlabs;
+package ua.net.itlabs.hw4.v1;
 
 import com.codeborne.selenide.*;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import ru.yandex.qatools.allure.annotations.Step;
+import ua.net.itlabs.hw4.v1.TodoMVCPageWithClearedDataAfterEachTest;
 
 
 import static com.codeborne.selenide.CollectionCondition.empty;

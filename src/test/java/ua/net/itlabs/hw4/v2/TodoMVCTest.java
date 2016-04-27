@@ -1,10 +1,9 @@
-package ua.net.itlabs.hw4;
+package ua.net.itlabs.hw4.v2;
 
 import com.codeborne.selenide.*;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import ru.yandex.qatools.allure.annotations.Step;
-import ua.net.itlabs.TodoMVCPageWithClearedDataAfterEachTest;
 
 
 import static com.codeborne.selenide.CollectionCondition.empty;
@@ -13,14 +12,16 @@ import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
-import static ua.net.itlabs.hw4.TodoMVCTest.TaskTypes.ACTIVE;
-import static ua.net.itlabs.hw4.TodoMVCTest.TaskTypes.COMPLETED;
+import static com.codeborne.selenide.WebDriverRunner.url;
+import static ua.net.itlabs.hw4.v2.TodoMVCTest.TaskTypes.ACTIVE;
+import static ua.net.itlabs.hw4.v2.TodoMVCTest.TaskTypes.COMPLETED;
 
 
-public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
+public class TodoMVCTest extends BaseTest {
 
     @Test
     public void testTasksCommonFlow() {
+        givenAtAll();
 
         add("1");
         startEdit("1", "1 edited").pressEnter();
@@ -47,9 +48,7 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     @Test
     public void testAddAtActive() {
-        //given - task at Active filter (in order to have filters panel visible)
-        givenAllActive("1");
-        filterActive();
+        givenAtActive(ACTIVE, "1");
 
         add("2");
         assertTasks("1", "2");
@@ -58,9 +57,7 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     @Test
     public void testEditAtActive() {
-        //given - task at Active filter
-        givenAllActive("1");
-        filterActive();
+        givenAtActive(ACTIVE, "1");
 
         startEdit("1", "1 edited").pressEnter();
         assertTasks("1 edited");
@@ -69,9 +66,7 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     @Test
     public void testDeleteAtActive() {
-        //given - task at Active filter
-        givenAllActive("1");
-        filterActive();
+        givenAtActive(ACTIVE, "1");
 
         delete("1");
         assertNoTasks();
@@ -79,58 +74,48 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     @Test
     public void testDeleteAtCompleted() {
-        //given - completed task at Completed filter
-        givenAllCompleted("1");
-        filterCompleted();
+        givenAtCompleted(COMPLETED, "1", "2");
 
-        delete("1");
-        assertNoTasks();
+        delete("2");
+        assertTasks("1");
+        assertItemsLeft(0);
     }
 
     @Test
     public void testCompleteAtAll() {
-        //given - task at All filter
-        givenAllActive("1");
+        givenAtAll(ACTIVE, "1", "2");
 
-        toggle("1");
-        assertTasks("1");
+        toggle("2");
+        assertTasks("1", "2");
         assertItemsLeft(1);
         clearCompleted();
-        assertNoTasks();
+        assertTasks("1");
     }
 
     @Test
     public void testReopenAtAll() {
-        //given - completed task at All filter
-        givenAllCompleted("1");
+        givenAtAll(COMPLETED, "1", "2");
 
-        toggle("1");
-        assertTasks("1");
+        toggle("2");
+        assertTasks("1", "2");
         assertItemsLeft(1);
-        filterCompleted();
-        assertNoTasks();
     }
 
     @Test
     public void testReopenAtCompleted() {
-        //given - task at Completed filter
-        givenAllCompleted("1");
-        filterCompleted();
+        givenAtCompleted(COMPLETED, "1");
 
         toggle("1");
         assertNoTasks();
-        filterActive();
-        assertTasks("1");
         assertItemsLeft(1);
     }
 
     @Test
     public void testCompleteAllAtAll() {
-        //given - two tasks at All filter
-        givenAllActive("1", "2");
+        givenAtAll(ACTIVE, "1", "2");
 
         toggleAll();
-        assertNoTasks();
+        assertTasks("1", "2");
         assertItemsLeft(0);
         filterCompleted();
         assertTasks("1", "2");
@@ -138,9 +123,7 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     @Test
     public void testCompleteAllAtActive() {
-        //given - two tasks at Active filter
-        givenAllActive("1", "2");
-        filterActive();
+        givenAtActive(ACTIVE, "1", "2");
 
         toggleAll();
         assertNoTasks();
@@ -152,8 +135,7 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     @Test
     public void testClearCompletedAtAll() {
-        //given - three tasks at All filter
-        given(aTask("1", ACTIVE), aTask("2", COMPLETED), aTask("3", COMPLETED));
+        givenAtAll(aTask("1", ACTIVE), aTask("2", COMPLETED), aTask("3", COMPLETED));
 
         clearCompleted();
         assertTasks("1");
@@ -162,9 +144,7 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     @Test
     public void testClearCompletedAtActive() {
-        //given - three tasks at Active filter
-        given(aTask("1", ACTIVE), aTask("2", COMPLETED), aTask("3", COMPLETED));
-        filterActive();
+        givenAtActive(aTask("1", ACTIVE), aTask("2", COMPLETED), aTask("3", COMPLETED));
 
         clearCompleted();
         assertTasks("1");
@@ -173,9 +153,7 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     @Test
     public void testClearCompletedAtCompleted() {
-        //given - three tasks at Completed filter
-        given(aTask("1", ACTIVE), aTask("2", COMPLETED), aTask("3", COMPLETED));
-        filterCompleted();
+        givenAtCompleted(aTask("1", ACTIVE), aTask("2", COMPLETED), aTask("3", COMPLETED));
 
         clearCompleted();
         assertNoTasks();
@@ -184,8 +162,7 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     @Test
     public void testCancelEditAtAll() {
-        //given - task at All filter
-        givenAllActive("1");
+        givenAtAll(ACTIVE, "1");
 
         startEdit("1", "1 cancel edit").pressEscape();
         assertTasks("1");
@@ -194,9 +171,7 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     @Test
     public void testReopenAllAtCompleted() {
-        //given - two tasks on Completed filter
-        givenAllCompleted("1", "2");
-        filterCompleted();
+        givenAtCompleted(COMPLETED, "1", "2");
 
         toggleAll();
         assertNoTasks();
@@ -206,8 +181,7 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     @Test
     public void testFilterCompletedFromAll() {
-        //given - two tasks on All filter
-        given(aTask("1", ACTIVE), aTask("2", COMPLETED));
+        givenAtAll(aTask("1", ACTIVE), aTask("2", COMPLETED));
 
         filterCompleted();
         assertTasks("2");
@@ -217,21 +191,17 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     @Test
     public void testFilterAllFromActive() {
-        //given - two tasks (only one visible on Active filter)
-        given(aTask("1", ACTIVE), aTask("2", COMPLETED));
-        filterActive();
+        givenAtActive(aTask("1", ACTIVE), aTask("2", COMPLETED));
 
         filterAll();
         assertTasks("1", "2");
-        assertItemsLeft(2);
+        assertItemsLeft(1);
 
     }
 
     @Test
     public void testFilterActiveFromCompleted() {
-        //given - two tasks (only one visible on Completed filter)
-        given(aTask("1", ACTIVE), aTask("2", COMPLETED));
-        filterCompleted();
+        givenAtCompleted(aTask("1", ACTIVE), aTask("2", COMPLETED));
 
         filterActive();
         assertTasks("1");
@@ -239,43 +209,42 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
 
     }
 
-    //extra coverage
-
     @Test
     public void testEditClickOutsideAtActive() {
+        givenAtActive(ACTIVE, "1", "2");
 
-        //given - task at Active filter
-        givenAllActive("1");
-        filterActive();
-
-        startEdit("1", "1 edited");
+        startEdit("2", "2 edited");
         $("#new-todo").click();
-        assertTasks("1 edited");
-        assertItemsLeft(1);
+        assertTasks("1", "2 edited");
+        assertItemsLeft(2);
     }
 
     @Test
     public void testEditClickTabAtAll() {
+        givenAtAll(ACTIVE, "1", "2", "3");
 
-        //given - task at All filter
-        givenAllActive("1");
-
-        startEdit("1", "1 edited").pressTab();
-        assertTasks("1 edited");
-        assertItemsLeft(1);
+        startEdit("2", "2 edited").pressTab();
+        assertTasks("1", "2 edited", "3");
+        assertItemsLeft(3);
     }
 
     @Test
     public void testDeleteByEmptyAtAll() {
-        //given - task at All filter
-        givenAllActive("1");
+        givenAtAll(ACTIVE, "1", "2", "3");
 
-        startEdit("1", "").pressEnter();
-        assertNoTasks();
+        startEdit("2", "").pressEnter();
+        assertTasks("1", "3");
     }
 
     public enum TaskTypes {ACTIVE, COMPLETED};
     ElementsCollection tasks = $$("#todo-list>li");
+
+    private void ensurePageOpened() {
+        if (! url().equals("https://todomvc4tasj.herokuapp.com/")) {
+            open("https://todomvc4tasj.herokuapp.com/");
+        }
+    }
+
 
     private class Task {
         String name;
@@ -291,40 +260,57 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
         return new Task(name, type);
     }
 
-    private void givenAllActive(String... names) {
+    private void givenAtAll(Task... tasks) {
+        ensurePageOpened();
+
         String strJS = "localStorage.setItem(\"todos-troopjs\", \"[";
-        for (String task : names) {
-            strJS = strJS + "{\\\"completed\\\":false, \\\"title\\\":\\\"" + task + "\\\"}, ";
+        if (tasks.length != 0) {
+            for (Task task : tasks) {
+                String taskType = (task.type == ACTIVE) ? "false" : "true";
+                strJS = strJS + String.format("{\\\"completed\\\":%s, \\\"title\\\":\\\"" + task.name + "\\\"}, ", taskType);
+            }
+            strJS = strJS.substring(0, strJS.length()-2);
         }
-        strJS = strJS.substring(0, strJS.length()-2);
+
         strJS = strJS + "]\")";
         executeJavaScript(strJS);
         refresh();
     }
 
-    private void givenAllCompleted(String... names) {
-        String strJS = "localStorage.setItem(\"todos-troopjs\", \"[";
-        for (String task : names) {
-            strJS = strJS + "{\\\"completed\\\":true, \\\"title\\\":\\\"" + task + "\\\"}, ";
-        }
-        strJS = strJS.substring(0, strJS.length()-2);
-        strJS = strJS + "]\")";
-        executeJavaScript(strJS);
-        refresh();
+    private void givenAtAll(TaskTypes taskType, String... taskTexts) {
+        givenAtAll(taskTypeAndTextsToTasksArray(taskType, taskTexts));
     }
 
-    private void given(Task... list) {
-        String strJS = "localStorage.setItem(\"todos-troopjs\", \"[";
-        for (Task task : list) {
-            if (task.type == ACTIVE)
-                strJS = strJS + "{\\\"completed\\\":false, \\\"title\\\":\\\"" + task.name + "\\\"}, ";
-            else
-                strJS = strJS + "{\\\"completed\\\":true, \\\"title\\\":\\\"" + task.name + "\\\"}, ";
+    private void givenAtActive(Task... list) {
+        givenAtAll(list);
+        filterActive();
+    }
+
+    private void givenAtActive(TaskTypes taskType, String... taskTexts) {
+        givenAtAll(taskTypeAndTextsToTasksArray(taskType, taskTexts));
+        filterActive();
+    }
+
+    private void givenAtCompleted(Task... list) {
+        givenAtAll(list);
+        filterCompleted();
+    }
+
+    private void givenAtCompleted(TaskTypes taskType, String... taskTexts) {
+        givenAtAll(taskTypeAndTextsToTasksArray(taskType, taskTexts));
+        filterCompleted();
+    }
+
+    private Task[] taskTypeAndTextsToTasksArray(TaskTypes taskType, String... taskTexts) {
+        Task tasksArray[] = new Task[taskTexts.length];
+        if (taskTexts.length != 0) {
+            int i=0;
+            for (String task: taskTexts) {
+                tasksArray[i] = aTask(task, taskType);
+                i++;
+            }
         }
-        strJS = strJS.substring(0, strJS.length()-2);
-        strJS = strJS + "]\")";
-        executeJavaScript(strJS);
-        refresh();
+        return tasksArray;
     }
 
     @Step
@@ -338,7 +324,7 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
     private SelenideElement startEdit(String oldTask, String newTask) {
 
         tasks.find(exactText(oldTask)).doubleClick();
-        return tasks.find(Condition.cssClass("active")).find(".edit").setValue(newTask);
+        return tasks.find(Condition.cssClass("editing")).find(".edit").setValue(newTask);
 
     }
 
