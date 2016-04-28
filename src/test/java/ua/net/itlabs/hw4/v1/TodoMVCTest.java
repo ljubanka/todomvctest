@@ -142,7 +142,7 @@ public class TodoMVCTest extends TodoMVCPageWithClearedDataAfterEachTest {
     private SelenideElement startEdit(String oldTask, String newTask) {
 
         tasks.find(exactText(oldTask)).doubleClick();
-        return tasks.find(Condition.cssClass("active")).find(".edit").setValue(newTask);
+        return tasks.find(Condition.cssClass("editing")).find(".edit").setValue(newTask);
 
     }
 

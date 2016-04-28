@@ -1,24 +1,21 @@
-package ua.net.itlabs.hw4.v2;
+package ua.net.itlabs.hw4.v3;
 
-import com.codeborne.selenide.*;
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import ru.yandex.qatools.allure.annotations.Step;
 
-
 import static com.codeborne.selenide.CollectionCondition.empty;
 import static com.codeborne.selenide.CollectionCondition.exactTexts;
-import static com.codeborne.selenide.Condition.enabled;
-import static com.codeborne.selenide.Condition.exactText;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.url;
-import static ua.net.itlabs.hw4.v2.TodoMVCTest.TaskType.ACTIVE;
-import static ua.net.itlabs.hw4.v2.TodoMVCTest.TaskType.COMPLETED;
-
+import static ua.net.itlabs.hw4.v3.TodoMVCTest.TaskType.ACTIVE;
+import static ua.net.itlabs.hw4.v3.TodoMVCTest.TaskType.COMPLETED;
 
 public class TodoMVCTest extends BaseTest {
-
     @Test
     public void testTasksCommonFlow() {
         givenAtAll();
@@ -177,7 +174,6 @@ public class TodoMVCTest extends BaseTest {
         filterCompleted();
         assertTasks("2");
         assertItemsLeft(1);
-
     }
 
     @Test
@@ -187,7 +183,6 @@ public class TodoMVCTest extends BaseTest {
         filterAll();
         assertTasks("1", "2");
         assertItemsLeft(1);
-
     }
 
     @Test
@@ -197,7 +192,6 @@ public class TodoMVCTest extends BaseTest {
         filterActive();
         assertTasks("1");
         assertItemsLeft(1);
-
     }
 
     @Test
@@ -228,10 +222,22 @@ public class TodoMVCTest extends BaseTest {
     }
 
     public enum TaskType {
-        ACTIVE,
-        COMPLETED;
+        ACTIVE("false"),
+        COMPLETED("true");
 
+        private final String isCompletedValue;
 
+        TaskType(String isCompletedValue) {
+            this.isCompletedValue = isCompletedValue;
+        }
+
+        private String isCompletedValue() {
+            return isCompletedValue;
+        }
+
+        public String toString() {
+            return this.isCompletedValue;
+        }
     }
 
     ElementsCollection tasks = $$("#todo-list>li");
@@ -242,7 +248,6 @@ public class TodoMVCTest extends BaseTest {
         }
     }
 
-
     private class Task {
         String name;
         TaskType type;
@@ -250,6 +255,10 @@ public class TodoMVCTest extends BaseTest {
         public Task(String name, TaskType type) {
             this.name = name;
             this.type = type;
+        }
+
+        public String toString() {
+            return "{\\\"completed\\\":" + type + ", \\\"title\\\":\\\"" + name + "\\\"}, ";
         }
     }
 
@@ -263,49 +272,43 @@ public class TodoMVCTest extends BaseTest {
         String strJS = "localStorage.setItem(\"todos-troopjs\", \"[";
         if (tasks.length != 0) {
             for (Task task : tasks) {
-                String taskTypee = (task.type == ACTIVE) ? "false" : "true";
-                strJS += String.format("{\\\"completed\\\":%s, \\\"title\\\":\\\"" + task.name + "\\\"}, ", taskTypee);
+                strJS += task;//"{\\\"completed\\\":" + task.type + ", \\\"title\\\":\\\"" + task + "\\\"}, ";
             }
             strJS = strJS.substring(0, strJS.length()-2);
         }
-
         strJS = strJS + "]\")";
         executeJavaScript(strJS);
         refresh();
     }
 
     private void givenAtAll(TaskType taskType, String... taskTexts) {
-        givenAtAll(taskTypeAndTextsToTasksArray(taskType, taskTexts));
+        givenAtAll(aTasks(taskType, taskTexts));
     }
 
-    private void givenAtActive(Task... list) {
-        givenAtAll(list);
+    private void givenAtActive(Task... tasks) {
+        givenAtAll(tasks);
         filterActive();
     }
 
     private void givenAtActive(TaskType taskType, String... taskTexts) {
-        givenAtAll(taskTypeAndTextsToTasksArray(taskType, taskTexts));
+        givenAtAll(aTasks(taskType, taskTexts));
         filterActive();
     }
 
-    private void givenAtCompleted(Task... list) {
-        givenAtAll(list);
+    private void givenAtCompleted(Task... tasks) {
+        givenAtAll(tasks);
         filterCompleted();
     }
 
     private void givenAtCompleted(TaskType taskType, String... taskTexts) {
-        givenAtAll(taskTypeAndTextsToTasksArray(taskType, taskTexts));
+        givenAtAll(aTasks(taskType, taskTexts));
         filterCompleted();
     }
 
-    private Task[] taskTypeAndTextsToTasksArray(TaskType taskType, String... taskTexts) {
+    private Task[] aTasks(TaskType taskType, String... taskTexts) {
         Task tasksArray[] = new Task[taskTexts.length];
-        if (taskTexts.length != 0) {
-            int i=0;
-            for (String task: taskTexts) {
-                tasksArray[i] = aTask(task, taskType);
-                i++;
-            }
+        for (int i=0; i<taskTexts.length; i++) {
+            tasksArray[i] = aTask(taskTexts[i], taskType);
         }
         return tasksArray;
     }
@@ -319,10 +322,8 @@ public class TodoMVCTest extends BaseTest {
 
     @Step
     private SelenideElement startEdit(String oldTask, String newTask) {
-
         tasks.find(exactText(oldTask)).doubleClick();
-        return tasks.find(Condition.cssClass("editing")).find(".edit").setValue(newTask);
-
+        return tasks.find(cssClass("editing")).find(".edit").setValue(newTask);
     }
 
     @Step
@@ -347,19 +348,16 @@ public class TodoMVCTest extends BaseTest {
 
     @Step
     private void filterAll() {
-
         $(By.linkText("All")).click();
     }
 
     @Step
     private void filterActive() {
-
         $(By.linkText("Active")).click();
     }
 
     @Step
     private void filterCompleted() {
-
         $(By.linkText("Completed")).click();
     }
 
