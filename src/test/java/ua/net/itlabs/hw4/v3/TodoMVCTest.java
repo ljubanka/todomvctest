@@ -231,10 +231,6 @@ public class TodoMVCTest extends BaseTest {
             this.isCompletedValue = isCompletedValue;
         }
 
-        private String isCompletedValue() {
-            return isCompletedValue;
-        }
-
         public String toString() {
             return this.isCompletedValue;
         }
@@ -269,13 +265,11 @@ public class TodoMVCTest extends BaseTest {
     private void givenAtAll(Task... tasks) {
         ensurePageOpened();
 
-        String strJS = "localStorage.setItem(\"todos-troopjs\", \"[";
-        if (tasks.length != 0) {
-            for (Task task : tasks) {
-                strJS += task;//"{\\\"completed\\\":" + task.type + ", \\\"title\\\":\\\"" + task + "\\\"}, ";
-            }
-            strJS = strJS.substring(0, strJS.length()-2);
+        String strJS = "localStorage.setItem(\"todos-troopjs\", \"[  ";
+        for (Task task : tasks) {
+            strJS += task;
         }
+        strJS = strJS.substring(0, strJS.length()-2);
         strJS = strJS + "]\")";
         executeJavaScript(strJS);
         refresh();
