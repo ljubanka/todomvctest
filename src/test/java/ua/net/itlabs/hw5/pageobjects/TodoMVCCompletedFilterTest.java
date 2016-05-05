@@ -8,9 +8,19 @@ import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.ACTIVE;
 import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.COMPLETED;
 
 public class TodoMVCCompletedFilterTest {
+<<<<<<< HEAD
 
     TodoMVCPage page = new TodoMVCPage();
 
+=======
+    static TodoMVCPage page;
+
+    @BeforeClass
+    public static void PageInitialize() {
+        page = new TodoMVCPage();
+    }
+    
+>>>>>>> bc3b38efc0824033c4d0f798698d53718212a774
     @Test
     public void testDelete() {
         page.givenAtCompleted(COMPLETED, "1", "2");
