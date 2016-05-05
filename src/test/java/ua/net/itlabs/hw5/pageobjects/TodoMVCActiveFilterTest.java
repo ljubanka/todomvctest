@@ -1,5 +1,6 @@
 package ua.net.itlabs.hw5.pageobjects;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage;
 
@@ -8,9 +9,16 @@ import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.ACTIVE;
 import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.COMPLETED;
 
 public class TodoMVCActiveFilterTest {
+
+    static TodoMVCPage page;
+
+    @BeforeClass
+    public static void PageInitialize() {
+        page = new TodoMVCPage();
+    }
+
     @Test
     public void testAdd() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtActive(ACTIVE, "1");
 
         page.add("2");
@@ -20,7 +28,6 @@ public class TodoMVCActiveFilterTest {
 
     @Test
     public void testEdit() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtActive(ACTIVE, "1", "2");
 
         page.startEdit("2", "2 edited").pressEnter();
@@ -30,7 +37,6 @@ public class TodoMVCActiveFilterTest {
 
     @Test
     public void testDelete() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtActive(ACTIVE, "1");
 
         page.delete("1");
@@ -39,7 +45,6 @@ public class TodoMVCActiveFilterTest {
 
     @Test
     public void testCompleteAll() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtActive(ACTIVE, "1", "2");
 
         page.toggleAll();
@@ -49,7 +54,6 @@ public class TodoMVCActiveFilterTest {
 
     @Test
     public void testClearCompleted() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtActive(page.aTask("1", ACTIVE), page.aTask("2", COMPLETED), page.aTask("3", COMPLETED));
 
         page.clearCompleted();
@@ -59,7 +63,6 @@ public class TodoMVCActiveFilterTest {
 
     @Test
     public void testEditClickOutside() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtActive(ACTIVE, "1", "2");
 
         page.startEdit("2", "2 edited");

@@ -1,5 +1,6 @@
 package ua.net.itlabs.hw5.pageobjects;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage;
 
@@ -7,9 +8,16 @@ import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.ACTIVE;
 import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.COMPLETED;
 
 public class TodoMVCGeneralTest extends BaseTest {
+
+    static TodoMVCPage page;
+
+    @BeforeClass
+    public static void PageInitialize() {
+        page = new TodoMVCPage();
+    }
+
     @Test
     public void testTasksCommonFlow() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtAll();
 
         page.add("1");
@@ -36,7 +44,6 @@ public class TodoMVCGeneralTest extends BaseTest {
 
     @Test
     public void testFilterFromAllToCompleted() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtAll(page.aTask("1", ACTIVE), page.aTask("2", COMPLETED));
 
         page.filterCompleted();
@@ -46,7 +53,6 @@ public class TodoMVCGeneralTest extends BaseTest {
 
     @Test
     public void testFilterFromActiveToAll() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtActive(page.aTask("1", ACTIVE), page.aTask("2", COMPLETED));
 
         page.filterAll();
@@ -56,7 +62,6 @@ public class TodoMVCGeneralTest extends BaseTest {
 
     @Test
     public void testFilterFromCompletedToActive() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtCompleted(page.aTask("1", ACTIVE), page.aTask("2", COMPLETED));
 
         page.filterActive();

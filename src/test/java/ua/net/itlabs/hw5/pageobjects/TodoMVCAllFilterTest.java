@@ -1,5 +1,6 @@
 package ua.net.itlabs.hw5.pageobjects;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage;
 
@@ -7,9 +8,16 @@ import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.ACTIVE;
 import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.COMPLETED;
 
 public class TodoMVCAllFilterTest {
+
+    static TodoMVCPage page;
+
+    @BeforeClass
+    public static void PageInitialize() {
+        page = new TodoMVCPage();
+    }
+
     @Test
     public void testComplete() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtAll(ACTIVE, "1", "2");
 
         page.toggle("2");
@@ -19,7 +27,6 @@ public class TodoMVCAllFilterTest {
 
     @Test
     public void testReopen() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtAll(COMPLETED, "1", "2");
 
         page.toggle("2");
@@ -29,7 +36,6 @@ public class TodoMVCAllFilterTest {
 
     @Test
     public void testCompleteAll() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtAll(page.aTask("1", ACTIVE), page.aTask("2", COMPLETED), page.aTask("3", ACTIVE));
 
         page.toggleAll();
@@ -39,7 +45,6 @@ public class TodoMVCAllFilterTest {
 
     @Test
     public void testClearCompleted() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtAll(COMPLETED, "1", "2", "3");
 
         page.clearCompleted();
@@ -48,7 +53,6 @@ public class TodoMVCAllFilterTest {
 
     @Test
     public void testCancelEdit() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtAll(ACTIVE, "1");
 
         page.startEdit("1", "1 cancel edit").pressEscape();
@@ -58,7 +62,6 @@ public class TodoMVCAllFilterTest {
 
     @Test
     public void testEditClickTab() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtAll(ACTIVE, "1", "2", "3");
 
         page.startEdit("2", "2 edited").pressTab();
@@ -68,7 +71,6 @@ public class TodoMVCAllFilterTest {
 
     @Test
     public void testDeleteByEmpty() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtAll(ACTIVE, "1", "2", "3");
 
         page.startEdit("2", "").pressEnter();
