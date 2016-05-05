@@ -9,12 +9,7 @@ import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.COMPLETED
 
 public class TodoMVCGeneralTest extends BaseTest {
 
-    static TodoMVCPage page;
-
-    @BeforeClass
-    public static void PageInitialize() {
-        page = new TodoMVCPage();
-    }
+    TodoMVCPage page = new TodoMVCPage();
 
     @Test
     public void testTasksCommonFlow() {

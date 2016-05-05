@@ -1,5 +1,6 @@
 package ua.net.itlabs.hw5.pageobjects;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage;
 
@@ -7,9 +8,11 @@ import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.ACTIVE;
 import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.COMPLETED;
 
 public class TodoMVCCompletedFilterTest {
+
+    TodoMVCPage page = new TodoMVCPage();
+
     @Test
     public void testDelete() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtCompleted(COMPLETED, "1", "2");
 
         page.delete("2");
@@ -19,7 +22,6 @@ public class TodoMVCCompletedFilterTest {
 
     @Test
     public void testReopen() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtCompleted(COMPLETED, "1");
 
         page.toggle("1");
@@ -29,7 +31,6 @@ public class TodoMVCCompletedFilterTest {
 
     @Test
     public void testClearCompleted() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtCompleted(COMPLETED, "1");
 
         page.clearCompleted();
@@ -38,7 +39,6 @@ public class TodoMVCCompletedFilterTest {
 
     @Test
     public void testReopenAll() {
-        TodoMVCPage page = new TodoMVCPage();
         page.givenAtCompleted(COMPLETED, "1", "2");
 
         page.toggleAll();
