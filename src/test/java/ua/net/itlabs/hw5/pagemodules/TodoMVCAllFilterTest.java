@@ -2,6 +2,7 @@ package ua.net.itlabs.hw5.pagemodules;
 
 import org.junit.Test;
 
+import static org.openqa.selenium.Keys.ESCAPE;
 import static ua.net.itlabs.hw5.pagemodules.pages.TodoMVC.*;
 import static ua.net.itlabs.hw5.pagemodules.pages.TodoMVC.TaskType.ACTIVE;
 import static ua.net.itlabs.hw5.pagemodules.pages.TodoMVC.TaskType.COMPLETED;
@@ -46,7 +47,7 @@ public class TodoMVCAllFilterTest {
     public void testCancelEdit() {
         givenAtAll(ACTIVE, "1");
 
-        startEdit("1", "1 cancel edit").pressEscape();
+        startEdit("1", "1 cancel edit").sendKeys(ESCAPE);//pressEscape();
         assertTasks("1");
         assertItemsLeft(1);
     }

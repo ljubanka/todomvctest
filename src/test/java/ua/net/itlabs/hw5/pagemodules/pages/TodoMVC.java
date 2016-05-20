@@ -10,6 +10,7 @@ import static com.codeborne.selenide.CollectionCondition.exactTexts;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.url;
+import static ua.net.itlabs.Helpers.doubleClick;
 
 public class TodoMVC {
     public enum TaskType {
@@ -107,9 +108,14 @@ public class TodoMVC {
 
     @Step
     public static SelenideElement startEdit(String oldTask, String newTask) {
-        tasks.find(exactText(oldTask)).doubleClick();
+
+        doubleClick(tasks.find(exactText(oldTask)).find("label"));
+        //tasks.find(exactText(oldTask)).doubleClick();
+
         return tasks.find(cssClass("editing")).find(".edit").setValue(newTask);
     }
+
+
 
     @Step
     public static void delete(String taskText) {

@@ -13,7 +13,7 @@
         <allure-mvn.version>2.5</allure-mvn.version>
         <aspectj.version>1.8.8</aspectj.version>
 
-        <selenide.version>3.4</selenide.version>
+        <selenide.version>2.17</selenide.version>
         <junit.version>4.12</junit.version>
         <surefire.version>2.19</surefire.version>
 
@@ -50,6 +50,7 @@
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
+
                     <properties>
                         <property>
                             <name>listener</name>

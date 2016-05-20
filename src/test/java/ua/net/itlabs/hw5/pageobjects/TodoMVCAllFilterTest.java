@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage;
 
+import static org.openqa.selenium.Keys.ESCAPE;
 import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.ACTIVE;
 import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.COMPLETED;
 
@@ -50,7 +51,7 @@ public class TodoMVCAllFilterTest {
     public void testCancelEdit() {
         page.givenAtAll(ACTIVE, "1");
 
-        page.startEdit("1", "1 cancel edit").pressEscape();
+        page.startEdit("1", "1 cancel edit").sendKeys(ESCAPE);
         page.assertTasks("1");
         page.assertItemsLeft(1);
     }

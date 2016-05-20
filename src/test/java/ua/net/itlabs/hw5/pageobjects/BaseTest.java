@@ -10,6 +10,8 @@ import ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage;
 import java.io.File;
 import java.io.IOException;
 
+import static com.codeborne.selenide.ex.ErrorMessages.screenshot;
+
 public class BaseTest {
 
     @After
@@ -19,7 +21,7 @@ public class BaseTest {
 
     @Attachment(type = "image/png")
     public byte[] screenshot() throws IOException {
-        File screenshot = Screenshots.takeScreenShotAsFile();
+        File screenshot = Screenshots.getScreenShotAsFile();
         return Files.toByteArray(screenshot);
     }
 }

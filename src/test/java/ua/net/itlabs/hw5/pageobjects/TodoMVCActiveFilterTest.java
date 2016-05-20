@@ -5,6 +5,7 @@ import org.junit.Test;
 import ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage;
 
 import static com.codeborne.selenide.Selenide.$;
+import static org.openqa.selenium.Keys.ENTER;
 import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.ACTIVE;
 import static ua.net.itlabs.hw5.pageobjects.pages.TodoMVCPage.TaskType.COMPLETED;
 
@@ -25,7 +26,7 @@ public class TodoMVCActiveFilterTest {
     public void testEdit() {
         page.givenAtActive(ACTIVE, "1", "2");
 
-        page.startEdit("2", "2 edited").pressEnter();
+        page.startEdit("2", "2 edited").sendKeys(ENTER);
         page.assertTasks("1", "2 edited");
         page.assertItemsLeft(2);
     }
