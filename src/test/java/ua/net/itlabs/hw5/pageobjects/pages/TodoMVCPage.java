@@ -112,13 +112,13 @@ public class TodoMVCPage {
     @Step
     public SelenideElement startEdit(String oldTask, String newTask) {
         doubleClick(tasks.find(exactText(oldTask)).find("label"));
-        //tasks.find(exactText(oldTask)).doubleClick();
         return tasks.find(cssClass("editing")).find(".edit").setValue(newTask);
     }
 
     @Step
     public void delete(String taskText) {
-        tasks.find(exactText(taskText)).hover().find(".destroy").click();
+        tasks.find(exactText(taskText)).hover();
+        tasks.find(exactText(taskText)).find(".destroy").click();
     }
 
     @Step
